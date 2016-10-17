@@ -10,7 +10,9 @@ SoftLogic = lg.SoftLogic(restart)
 SplittingLogic = lg.SplittingLogic(restart)
 SurrenderLogic = lg.SurrenderLogic(restart)
 
-RandomGen = rg.RandomGenerator(2)
+RandomGen = rg.RandomGenerator(27)
 Strategy = st.Strategy(SplittingLogic.splittingTest,SoftLogic.softTest,HardLogic.hardTest,SurrenderLogic.surrenderTest)
 
-g.game(1000000,8,Strategy,RandomGen)
+for i in range(1,10000):
+    payoff = g.game(1000,8,Strategy,RandomGen)
+    print(payoff)

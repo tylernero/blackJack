@@ -26,7 +26,7 @@ class Shoe:
         card = self.shoe[0]
         del self.shoe[0]
         if len(self.shoe)==0:
-            self.suffle()
+            self.shuffle()
         return card
 
     def shuffleTest(self,cards):
