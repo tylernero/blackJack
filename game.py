@@ -16,30 +16,43 @@ def game(hands,shoeSize,strategy,randomGen):
         if action == 'capitulate':
             wallet = wallet - minbet/2
         elif action == 'blackjack':
-            wallet = wallet + 3*minbet/2
+            wallet = wallet + (3*minbet)/2
         elif action == 'split':
             splitPlay(cards[0],cards[1],dealerUpCard,dealerDownCard)
         else:
             if action == 'double':
                 cards.append(shoe.getCard())
                 val += cardVals[cards[-1]][0]
-            else:
-                val = c.cardVals[cards[0]]+c.cardVals[cards[1]]
-                while action == 'hit':
-                    cards.append(shoe.getCard())
-                    val += c.cardVals[cards[-1]]
-                    if val > 21:
-                        wallet = wallet-minbet
-                        break
-                    else:
-                        action = strategy.laterCards(cards,dealerUpCard)
-                dealerVal = dealerPlay(dealerUpCard,dealerDownCard,shoe)
                 playerVal = getPlayerVal(val,cards)
-                if dealerVal > playerVal:
-                    wallet = wallet - minbet
-                elif playerVal > dealerVal:
-                    wallet = wallet + minbet
+            else:
+                playerVal = playerPlay(cards,shoe,strategy,dealerUpCard)
+                dealerVal = dealerPlay(dealerUpCard,dealerDownCard,shoe)
+            wallet = payout(playerVal,dealerVal,wallet,minbet)
     return wallet
+
+
+
+def payout(playerVal,dealerVal,wallet,minbet):
+    if dealerVal > playerVal or playerVal == 'bust':
+        return wallet - minbet
+    elif playerVal > dealerVal or dealerVal == 'bust':
+        return wallet + minbet
+    else:
+        return wallet
+
+
+def playerPlay(cards,shoe,strategy,dealerUpCard):
+    action = 'hit'
+    val = c.cardVals[cards[0]][0]+c.cardVals[cards[1]][0]
+    while action == 'hit':
+        cards.append(shoe.getCard())
+        val += c.cardVals[cards[-1]][0]
+        if val > 21:
+            'bust'
+            break
+        else:
+            action = strategy.laterCards(cards,dealerUpCard)
+    return getPlayerVal(val,cards)
 
 def dealerPlay(dealerUpCard,dealerDownCard,shoe):
     dealerVal = c.cardVals[dealerUpCard][0]+c.cardVals[dealerDownCard][0]

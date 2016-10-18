@@ -34,10 +34,10 @@ class Strategy:
         else:
             return self.hardLogic(val,dealerCard)
 
-    def laterCards(cards,dealerCard):
+    def laterCards(self,cards,dealerCard):
         total = 0
         for i in cards:
-            total += cardVals[i]
+            total += cardVals[i][0]
         try:
             ace = cards.index('ace')
             return self.softLogic(total-1,dealerCard)
