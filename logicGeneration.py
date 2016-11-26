@@ -19,6 +19,7 @@ class HardLogic:
         else:
             return self.logicDic[value][dealerCard]
 
+
 class SoftLogic:
     def __init__(self,restart=None):
         if restart==False or restart==None:

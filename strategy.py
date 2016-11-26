@@ -8,9 +8,9 @@ class Strategy:
         self.lateSurrender = lateSurrender
 
     def firstCard(self,card1,card2,dealerCard,dealerDownCard):
-        if card1=='ace' and cardVals[card2]==10:
+        if card1=='ace' and cardVals[card2][0]==10:
             return 'blackjack'
-        elif card2=='ace' and cardVals[card2]==10:
+        elif card2=='ace' and cardVals[card1][0]==10:
             return 'blackjack'
         val = cardVals[card1][0]+cardVals[card2][0]
         #splitting logic
