@@ -1,11 +1,11 @@
 from cards import cardVals
 
 class Strategy:
-    def __init__(self,splitLogic,softLogic,hardLogic,lateSurrender):
+    def __init__(self,splitLogic,softLogic,hardLogic,firstCardOptions):
         self.splitLogic = splitLogic
         self.softLogic = softLogic
         self.hardLogic = hardLogic
-        self.lateSurrender = lateSurrender
+        self.firstCardOptions = firstCardOptions
 
     def firstCard(self,card1,card2,dealerCard,dealerDownCard):
         if card1=='ace' and cardVals[card2][0]==10:
@@ -17,14 +17,16 @@ class Strategy:
         if card1 == card2:
             if self.splitLogic(card1,dealerCard) == 'split':
                 return 'split'
+        extraLogic = self.firstCardOptions(val,dealerCard)
+        if extraLogic == 'capitulate':
+            return 'capitulate'
+        elif extraLogic == 'double':
+            return 'double'
         #late surrender logic
         if dealerCard=='ace' and cardVals[dealerDownCard]==10:
             return 'stay'
         elif dealerDownCard=='ace' and cardVals[dealerCard]==10:
             return 'stay'
-        else:
-            if self.lateSurrender(val,dealerCard)=='capitulate':
-                return 'capitulate'
         #other logic
         if card1 == 'ace' or card2 == 'ace':
             if card1 =='ace':

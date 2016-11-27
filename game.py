@@ -13,6 +13,7 @@ def game(hands,shoeSize,strategy,randomGen):
         dealerDownCard = shoe.getCard()
         cards.append(shoe.getCard())
         dealerUpCard = shoe.getCard()
+        bet = minbet
         action = strategy.firstCard(cards[0],cards[1],dealerUpCard,dealerDownCard)
         if action == 'capitulate':
             wallet.updateDollars(-minbet/2.0)
@@ -23,9 +24,10 @@ def game(hands,shoeSize,strategy,randomGen):
         elif action == 'split':
             playerVal = splitPlay(cards,dealerUpCard,dealerDownCard,shoe,wallet,strategy,1)
         elif action == 'double':
+            bet = bet*2
             cards.append(shoe.getCard())
             val = getVals(cards)
-            val += cardVals[cards[-1]][0]
+            val += c.cardVals[cards[-1]][0]
             playerVal = [getPlayerVal(val,cards)]
         elif action == 'stay':
             playerVal = [getVals(cards)]
@@ -33,7 +35,7 @@ def game(hands,shoeSize,strategy,randomGen):
             playerVal = [playerPlay(cards,shoe,strategy,dealerUpCard)]
         dealerVal = dealerPlay(dealerUpCard,dealerDownCard,shoe)
         for pays in playerVal:
-            payout(pays,dealerVal,wallet,minbet)
+            payout(pays,dealerVal,wallet,bet)
     return wallet.cashOut()
 
 
@@ -110,14 +112,15 @@ def splitPlay(cards,dealerUpCard,dealerDownCard,shoe,wallet,strategy,depth):
         hand = [i, shoe.getCard()]
         action = strategy.firstCard(hand[0],hand[1],dealerUpCard,dealerDownCard)
         if action == 'capitulate':
-            wallet.apdateDollars(-minbet/2.0)
+            wallet.updateDollars(-minbet/2.0)
         elif action == 'blackjack':
             wallet.updateDollars((3.0*minbet)/2.0)
         elif action == 'split' and depth < 3:
             playerVals = playerVals + splitPlay(hand,dealerUpCard,dealerDownCard,shoe,wallet,strategy,depth+1)
         elif action == 'double':
             hand.append(shoe.getCard())
-            val += cardVals[hand[-1]][0]
+            val = c.cardVals[hand[0]][0]+c.cardVals[hand[1]][0]
+            val += c.cardVals[hand[-1]][0]
             playerVals.append(getPlayerVal(val,hand))
         elif action == 'stay':
             playerVals.append(getVals(hand))

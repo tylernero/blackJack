@@ -18,8 +18,20 @@ class HardLogic:
             return 'stay'
         else:
             return self.logicDic[value][dealerCard]
-
-
+    def tempSwitch(self,value,dealerCard):
+        self.switchValue=value
+        self.switchDealerCard=dealerCard
+        self.incumbdentValue=self.logicDic[value][dealerCard]
+        if self.logicDic[value][dealerCard] == 'hit':
+            self.logicDic[value][dealerCard] = 'stay'
+        elif self.logicDic[value][dealerCard] == 'stay':
+            self.logicDic[value][dealerCard] = 'hit'
+        else:
+            raise Exception
+    def setTempChange(self):
+        pickle.dump(self.logicDic,open("hardLogic.p","wb"))
+    def reverseTempChange(self):
+        self.logicDic[self.switchValue][self.switchDealerCard]=self.incumbdentValue
 class SoftLogic:
     def __init__(self,restart=None):
         if restart==False or restart==None:
@@ -34,6 +46,20 @@ class SoftLogic:
             return 'stay'
         else:
             return self.logicDic[value][dealerCard]
+    def tempSwitch(self,value,dealerCard):
+        self.switchValue=value
+        self.switchDealerCard=dealerCard
+        self.incumbdentValue=self.logicDic[value][dealerCard]
+        if self.logicDic[value][dealerCard] == 'hit':
+            self.logicDic[value][dealerCard] ='stay'
+        elif self.logicDic[value][dealerCard] == 'stay':
+            self.logicDic[value][dealerCard] ='hit'
+        else:
+            raise Exception
+    def setTempChange(self):
+        pickle.dump(self.logicDic,open("softLogic.p","wb"))
+    def reverseTempChange(self):
+        self.logicDic[self.switchValue][self.switchDealerCard]=self.incumbdentValue
 
 class SplittingLogic:
     def __init__(self,restart=None):
@@ -44,21 +70,77 @@ class SplittingLogic:
         pickle.dump(self.logicDic,open("splitLogic.p","wb"))
     def splittingTest(self,card,dealerCard):
         return self.logicDic[card][dealerCard]
+    def tempSwitch(self,value,dealerCard):
+        self.switchValue=value
+        self.switchDealerCard=dealerCard
+        self.incumbdentValue=self.logicDic[value][dealerCard]
+        if self.logicDic[value][dealerCard] == 'split':
+            self.logicDic[value][dealerCard] = 'dont'
+        elif self.logicDic[value][dealerCard] == 'dont':
+            self.logicDic[value][dealerCard] = 'split'
+        else:
+            raise Exception
+    def setTempChange(self):
+        pickle.dump(self.logicDic,open("splitLogic.p","wb"))
+    def reverseTempChange(self):
+        self.logicDic[self.switchValue][self.switchDealerCard]=self.incumbdentValue
 
-class SurrenderLogic:
+class FirstCardLogic:
     def __init__(self,restart=None):
         if restart==False or restart==None:
-            self.logicDic = getLateSurrenderLogic()
+            self.logicDic = getFirstCardLogic()
         else:
-            self.logicDic = pickle.load(open("surrenderLogic.p","rb"))
-        pickle.dump(self.logicDic,open("surrenderLogic.p","wb"))
-    def surrenderTest(self,value,dealerCard):
+            self.logicDic = pickle.load(open("FirstCardLogic.p","rb"))
+        pickle.dump(self.logicDic,open("FirstCardLogic.p","wb"))
+    def firstTest(self,value,dealerCard):
         if value < 12 or value > 19:
             return 'fight'
         else:
             return self.logicDic[value][dealerCard]
-
-
+    def tempSwitch(self,value,dealerCard,test):
+        self.switchValue=value
+        self.switchDealerCard=dealerCard
+        self.incumbdentValue=self.logicDic[value][dealerCard]
+        #2:cap->none;3:cap->none;4:db->none;5:db->db;6:none->cap;7:none->none
+        if test == 1:
+            if self.logicDic[value][dealerCard]=='fight':
+                self.logicDic[value][dealerCard]='capitulate'
+            elif self.logicDic[value][dealerCard]=='capitulate':
+                self.logicDic[value][dealerCard]='fight'
+            elif self.logicDic[value][dealerCard]=='double':
+                self.logicDic[value][dealerCard]='fight'
+            else:
+                raise Exception
+        elif test == 2:
+            self.logicDic[value][dealerCard]='double'
+        elif test == 3:
+            self.logicDic[value][dealerCard]='double'
+        elif test == 4:
+            self.logicDic[value][dealerCard]='capitulate'
+        elif test == 5:
+            self.logicDic[value][dealerCard]='capitulate'
+        elif test == 6:
+            self.logicDic[value][dealerCard]='double'
+        elif test == 7:
+            self.logicDic[value][dealerCard]='double'
+        else:
+            raise Exception
+    def setTempChange(self):
+        pickle.dump(self.logicDic,open("FirstCardLogic.p","wb"))
+        if self.incumbdentValue =='capitulate':
+            return 2
+        elif self.incumbdentValue == 'double':
+            return 4
+        else:
+            return 6
+    def reverseTempChange(self):
+        self.logicDic[self.switchValue][self.switchDealerCard]=self.incumbdentValue
+        if self.incumbdentValue =='capitulate':
+            return 3
+        elif self.incumbdentValue =='double':
+            return 5
+        else:
+            return 7
 def getHardLogic():
     logicDic = {}
     for i in range(6,20):
@@ -83,7 +165,7 @@ def getSplitLogic():
             logicDic[i][j] = 'split'
     return logicDic
 
-def getLateSurrenderLogic():
+def getFirstCardLogic():
     logicDic = {}
     for i in range(12,20):
         logicDic[i]={}
