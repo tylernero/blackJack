@@ -10,18 +10,22 @@ try:
 except:
     import pickle as pickle
 
-restart = False
-decks = 8
-games = 2000
+restart = True
+decks = 2
+games = 100000
 hands = 50
-randomNumberSeed = 27
+randomNumberSeed = 123
 
 if restart == True:
     spot = pickle.load(open("spot.p","rb"))
-else:
+elif restart == False:
     spot = {'block':0,
-            'val':0}
-    pickle.dump(spot,open("spot.py","wb"))
+        'val':0}
+else:
+    restart = True
+    spot = {'block':0,
+        'val':0}
+pickle.dump(spot,open("spot.py","wb"))
 
 HardLogic = lg.HardLogic(restart)
 SoftLogic = lg.SoftLogic(restart)
